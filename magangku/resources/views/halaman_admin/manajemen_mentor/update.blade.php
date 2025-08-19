@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card card-primary">
-                        <div class="card-header">
+                        <div class="card-header" style="background-color: #343a40;">
                             <h3 class="card-title">Update Mentor</h3>
                         </div>
                         <!-- /.card-header -->
@@ -49,7 +49,7 @@
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" style="background-color: #343a40; border-color: #343a40;">
                                     <i class="fas fa-save"></i> Simpan
                                 </button>
                                 <a href="{{ route('mentor.index') }}" class="btn btn-secondary float-right">

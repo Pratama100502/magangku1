@@ -13,7 +13,8 @@ class DokumenController extends Controller
     public function index()
     {
         $query = PesertaMagang::with('dokumen')
-            ->whereIn('status', ['aktif', 'selesai']);
+            ->whereIn('status', ['aktif', 'selesai'])
+            ->where('role', '!=', 'admin');
 
         if (request('nama')) {
             $query->where('nama', 'like', '%' . request('nama') . '%');

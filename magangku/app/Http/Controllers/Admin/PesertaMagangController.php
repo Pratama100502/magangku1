@@ -21,9 +21,9 @@ class PesertaMagangController extends Controller
             $query->where('status', $request->status);
         }
 
-        // if (!$request->has('status')) {
-        //     $query->where('status', 'semua aktif');
-        // }
+        if (!$request->has('status')) {
+            $query->where('status', 'aktif');
+        }
 
         if ($request->has('nama')) {
             $query->where('nama', 'like', '%' . $request->nama . '%');
@@ -69,8 +69,8 @@ class PesertaMagangController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date',
             'anggota' => 'nullable|array',
-            'anggota.*.nama' => 'required_with:anggota',
-            'anggota.*.no_hp' => 'required_with:anggota.*.nama',
+            'anggota.*.nama_anggota' => 'required_with:anggota',
+            'anggota.*.no_hp_anggota' => 'required_with:anggota.*.nama_anggota',
         ]);
 
         try {
@@ -91,9 +91,8 @@ class PesertaMagangController extends Controller
                 'tanggal_selesai' => $request->tanggal_selesai,
             ]);
 
-            // Jika ada data anggota, simpan ke tabel anggota
-            if ($request->has('nama_anggota') && is_array($request->nama_anggota)) {
-                foreach ($request->nama_anggota as $item) {
+            if ($request->has('anggota') && is_array($request->anggota)) {
+                foreach ($request->anggota as $item) {
                     $peserta->anggota()->create([
                         'nama_anggota' => $item['nama_anggota'],
                         'no_hp_anggota' => $item['no_hp_anggota'],
@@ -106,7 +105,7 @@ class PesertaMagangController extends Controller
             return redirect()->back()->with('success', 'Data peserta dan anggota berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
         }
     }
 
@@ -134,15 +133,15 @@ class PesertaMagangController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date',
             'anggota' => 'nullable|array',
-            'anggota.*.id' => 'sometimes|exists:anggota,id',
-            'anggota.*.nama_anggota' => 'required_with:anggota.*.no_hp_anggota',
+            'anggota.*.id' => 'sometimes|nullable|exists:anggota,id,ketua_id,' . $peserta->id,
+            'anggota.*.nama_anggota' => 'required_with:anggota',
             'anggota.*.no_hp_anggota' => 'required_with:anggota.*.nama_anggota',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $peserta->update([
+            $dataToUpdate = [
                 'nama' => $request->nama,
                 'nim' => $request->nim,
                 'email' => $request->email,
@@ -154,35 +153,34 @@ class PesertaMagangController extends Controller
                 'mentor_id' => $request->mentor_id,
                 'tanggal_mulai' => $request->tanggal_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
-            ]);
+            ];
 
-            // Jika password diisi, update password
             if ($request->filled('password')) {
-                $peserta->update(['password' => Hash::make($request->password)]);
+                $dataToUpdate['password'] = Hash::make($request->password);
             }
 
-            $existingAnggotaIds = $peserta->anggota->pluck('id')->toArray();
+            $peserta->update($dataToUpdate);
+
+            $existingAnggotaIds = $peserta->anggota()->pluck('id')->toArray();
             $submittedAnggotaIds = [];
 
             if ($request->has('anggota')) {
                 foreach ($request->anggota as $item) {
-                    if (isset($item['id'])) {
-
-                        $anggota = $peserta->anggota()->find($item['id']);
-                        if ($anggota) {
-                            $anggota->update([
+                    if (!empty($item['id'])) {
+                        $peserta->anggota()
+                            ->where('id', $item['id'])
+                            ->update([
                                 'nama_anggota' => $item['nama_anggota'],
                                 'no_hp_anggota' => $item['no_hp_anggota']
                             ]);
-                            $submittedAnggotaIds[] = $item['id'];
-                        }
+                        $submittedAnggotaIds[] = $item['id'];
                     } else {
-
-                        $peserta->anggota()->create([
+                        $newAnggota = $peserta->anggota()->create([
                             'nama_anggota' => $item['nama_anggota'],
                             'no_hp_anggota' => $item['no_hp_anggota'],
                             'ketua_id' => $peserta->id
                         ]);
+                        $submittedAnggotaIds[] = $newAnggota->id;
                     }
                 }
             }
@@ -193,10 +191,12 @@ class PesertaMagangController extends Controller
             }
 
             DB::commit();
-            return redirect()->back()->with('success', 'Data peserta dan anggota berhasil diupdate!');
+            return redirect()->back()->with('success', 'Data peserta dan anggota berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage())
+                ->withInput();
         }
     }
 

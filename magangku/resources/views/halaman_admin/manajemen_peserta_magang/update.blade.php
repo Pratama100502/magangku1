@@ -5,28 +5,27 @@
 @section('content')
 
     <body>
-        <div class="container-xl">
+        <div class="container-fluid">
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
                             <div class="card card-primary">
-                                <div class="card-header">
+                                <div class="card-header" style="background-color: #343a40; color: #fff;">
                                     <h3 class="card-title">Form Edit Peserta Magang</h3>
                                 </div>
-                                <!-- /.card-header -->
                                 <form action="{{ route('peserta.update', $peserta->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-6">  
                                                 <div class="form-group">
                                                     <label for="nama">Nama Lengkap</label>
                                                     <input type="text"
                                                         class="form-control @error('nama') is-invalid @enderror"
                                                         id="nama" name="nama" placeholder="Masukkan nama lengkap"
-                                                        value="{{ old('nama', $peserta->nama) }}" required>
+                                                        value="{{ old('nama', $peserta->nama) }}">
                                                     @error('nama')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -37,7 +36,7 @@
                                                     <input type="text"
                                                         class="form-control @error('nim') is-invalid @enderror"
                                                         id="nim" name="nim" placeholder="Masukkan NIM"
-                                                        value="{{ old('nim', $peserta->nim) }}" required>
+                                                        value="{{ old('nim', $peserta->nim) }}">
                                                     @error('nim')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -48,7 +47,7 @@
                                                     <input type="email"
                                                         class="form-control @error('email') is-invalid @enderror"
                                                         id="email" name="email" placeholder="Masukkan email"
-                                                        value="{{ old('email', $peserta->email) }}" required>
+                                                        value="{{ old('email', $peserta->email) }}">
                                                     @error('email')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -70,7 +69,7 @@
                                                     <input type="text"
                                                         class="form-control @error('no_hp') is-invalid @enderror"
                                                         id="no_hp" name="no_hp" placeholder="Masukkan nomor HP"
-                                                        value="{{ old('no_hp', $peserta->no_hp) }}" required>
+                                                        value="{{ old('no_hp', $peserta->no_hp) }}">
                                                     @error('no_hp')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -84,7 +83,7 @@
                                                         class="form-control @error('asal_sekolah') is-invalid @enderror"
                                                         id="asal_sekolah" name="asal_sekolah"
                                                         placeholder="Masukkan asal sekolah/universitas"
-                                                        value="{{ old('asal_sekolah', $peserta->asal_sekolah) }}" required>
+                                                        value="{{ old('asal_sekolah', $peserta->asal_sekolah) }}">
                                                     @error('asal_sekolah')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -95,7 +94,7 @@
                                                     <input type="text"
                                                         class="form-control @error('jurusan') is-invalid @enderror"
                                                         id="jurusan" name="jurusan" placeholder="Masukkan jurusan"
-                                                        value="{{ old('jurusan', $peserta->jurusan) }}" required>
+                                                        value="{{ old('jurusan', $peserta->jurusan) }}">
                                                     @error('jurusan')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -104,7 +103,7 @@
                                                 <div class="form-group">
                                                     <label for="status">Status</label>
                                                     <select class="form-control @error('status') is-invalid @enderror"
-                                                        id="status" name="status" required>
+                                                        id="status" name="status">
                                                         <option value="">Pilih Status</option>
                                                         <option value="mengajukan"
                                                             {{ old('status', $peserta->status) == 'mengajukan' ? 'selected' : '' }}>
@@ -165,7 +164,7 @@
                                                         class="form-control @error('tanggal_mulai') is-invalid @enderror"
                                                         id="tanggal_mulai" name="tanggal_mulai"
                                                         value="{{ old('tanggal_mulai', $peserta->tanggal_mulai) }}"
-                                                        required>
+                                                        >
                                                     @error('tanggal_mulai')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -178,7 +177,7 @@
                                                         class="form-control @error('tanggal_selesai') is-invalid @enderror"
                                                         id="tanggal_selesai" name="tanggal_selesai"
                                                         value="{{ old('tanggal_selesai', $peserta->tanggal_selesai) }}"
-                                                        required>
+                                                        >
                                                     @error('tanggal_selesai')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -190,38 +189,35 @@
                                         <h4>Anggota Magang (Jika Berkelompok)</h4>
                                         <div id="anggota-container">
                                             @foreach ($peserta->anggota as $index => $anggota)
-                                                <div class="anggota-item row mb-3">
-                                                    <div class="col-md-5">
-                                                        <input type="hidden" name="anggota[{{ $index }}][id]"
-                                                            value="{{ $anggota->id }}">
-                                                        <input type="text" class="form-control"
-                                                            name="anggota[{{ $index }}][nama_anggota]"
-                                                            placeholder="Nama Anggota"
-                                                            value="{{ old('anggota.' . $index . '.nama', $anggota->nama) }}">
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <input type="text" class="form-control"
-                                                            name="anggota[{{ $index }}][no_hp_anggota]"
-                                                            placeholder="Nomor HP Anggota"
-                                                            value="{{ old('anggota.' . $index . '.no_hp', $anggota->no_hp) }}">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-danger hapus-anggota">
-                                                            <i class="fas fa-trash"></i> Hapus
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                        <div class="anggota-item row mb-3">
+                                            <div class="col-md-5">
+                                                <input type="hidden" name="anggota[{{ $index }}][id]" value="{{ $anggota->id }}">
+                                                <input type="text" class="form-control"
+                                                    name="anggota[{{ $index }}][nama_anggota]"
+                                                    placeholder="Nama Anggota"
+                                                    value="{{ old('anggota.' . $index . '.nama_anggota', $anggota->nama_anggota) }}">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control"
+                                                    name="anggota[{{ $index }}][no_hp_anggota]"
+                                                    placeholder="Nomor HP Anggota"
+                                                    value="{{ old('anggota.' . $index . '.no_hp_anggota', $anggota->no_hp_anggota) }}">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-sm btn-danger hapus-anggota">
+                                                    <i class="fas fa-trash"></i> Hapus
+                                                </button>
+                                            </div>
                                         </div>
-                                        <button type="button" id="tambah-anggota" class="btn btn-sm btn-primary mt-2">
+                                        @endforeach
+                                        </div>
+                                        <button type="button" id="tambah-anggota" class="btn btn-sm btn-primary mt-2" style="background-color: #343a40; color: #fff; border-color: #343a40;">
                                             <i class="fas fa-plus"></i> Tambah Anggota
                                         </button>
                                     </div>
-                                    <!-- /.card-body -->
 
                                     <div class="card-footer">
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="btn btn-primary" style="background-color: #343a40; color: #fff; border-color: #343a40;">
                                             <i class="fas fa-save"></i> Simpan Perubahan
                                         </button>
                                         <a href="{{ route('peserta.index') }}" class="btn btn-secondary float-right">
@@ -230,81 +226,93 @@
                                     </div>
                                 </form>
                             </div>
-                            <!-- /.card -->
                         </div>
-
                     </div>
-                    <!-- /.row -->
                 </div>
-                <!-- /.container-fluid -->
             </section>
         </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Anggota dinamis
-            const anggotaContainer = document.getElementById('anggota-container');
-            const tambahAnggotaBtn = document.getElementById('tambah-anggota');
-            let anggotaCount = {{ $peserta->anggota->count() }};
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Anggota dinamis
+                const anggotaContainer = document.getElementById('anggota-container');
+                const tambahAnggotaBtn = document.getElementById('tambah-anggota');
+                let anggotaCount = {{ $peserta->anggota->count() }};
 
-            // Template untuk anggota baru
-            function createAnggotaField() {
+                // Template untuk anggota baru
+                function createAnggotaField() {
                 anggotaCount++;
                 const div = document.createElement('div');
                 div.className = 'anggota-item row mb-3';
                 div.innerHTML = `
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="anggota[${anggotaCount}][nama]" placeholder="Nama Anggota">
-                    </div>
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="anggota[${anggotaCount}][no_hp]" placeholder="Nomor HP Anggota">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-sm btn-danger hapus-anggota">
-                            <i class="fas fa-trash"></i> Hapus
-                        </button>
-                    </div>
-                `;
-                return div;
-            }
-
-            // Tambah anggota baru
-            tambahAnggotaBtn.addEventListener('click', function() {
-                anggotaContainer.appendChild(createAnggotaField());
-            });
-
-            anggotaContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('hapus-anggota') || e.target.closest('.hapus-anggota')) {
-                    const item = e.target.closest('.anggota-item');
-                    if (item) {
-                        item.remove();
-                    }
+        <div class="col-md-5">
+            <input type="text" class="form-control" 
+                   name="anggota[${anggotaCount}][nama_anggota]" 
+                   placeholder="Nama Anggota">
+        </div>
+        <div class="col-md-5">
+            <input type="text" class="form-control" 
+                   name="anggota[${anggotaCount}][no_hp_anggota]" 
+                   placeholder="Nomor HP Anggota">
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-sm btn-danger hapus-anggota">
+                <i class="fas fa-trash"></i> Hapus
+            </button>
+        </div>
+    `;
+                    return div;
                 }
+
+                // Tambah anggota baru
+                tambahAnggotaBtn.addEventListener('click', function() {
+                    anggotaContainer.appendChild(createAnggotaField());
+                });
+
+                // Hapus anggota
+                anggotaContainer.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('hapus-anggota') || e.target.closest('.hapus-anggota')) {
+                        const item = e.target.closest('.anggota-item');
+                        if (item) {
+                            item.remove();
+                        }
+                    }
+                });
+
+                @if (session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        window.location.href = "{{ route('peserta.index') }}";
+                    });
+                @endif
+
+                @if (session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terdapat Kesalahan...',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#d33'
+                    });
+                @endif
+
+                @if ($errors->any())
+                    let errorMessages = "";
+                    @foreach ($errors->all() as $error)
+                        errorMessages += "{{ $error }}\n";
+                    @endforeach
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessages,
+                        confirmButtonColor: '#d33'
+                    });
+                @endif
             });
-        });
-
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#d33'
-            });
-        @endif
-
-        @if ($errors->any())
-            let errorMessages = "";
-            @foreach ($errors->all() as $error)
-                errorMessages += "{{ $error }}\n";
-            @endforeach
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: errorMessages,
-                confirmButtonColor: '#d33'
-            });
-        @endif
-    </script>
-
+        </script>
+    </body>
 @endsection

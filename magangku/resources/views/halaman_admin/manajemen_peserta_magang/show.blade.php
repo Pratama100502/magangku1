@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card card-primary">
-                        <div class="card-header">
+                        <div class="card-header" style="background-color: #343a40;">
                             <h3 class="card-title">Detail Peserta Magang</h3>
                             <div class="card-tools">
                                 <a href="{{ route('peserta.edit', $peserta->id) }}" class="btn btn-sm btn-warning">
